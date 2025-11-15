@@ -1,0 +1,10 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Disallow: /admin
+Disallow: /api
+Disallow: /_next
+Disallow: /assets/private
+
+Allow: /
+
+Sitemap: https://vendgenius.com/sitemap.xml
