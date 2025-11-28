@@ -40,14 +40,14 @@ export default function CTA() {
             </button>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-8 justify-center items-center pt-8 border-t border-white/20">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-8 border-t border-white/20">
             <div className="flex items-center gap-3">
               <div className="bg-white/10 p-3 rounded-lg">
                 <Phone className="w-6 h-6" />
               </div>
               <div className="text-left">
                 <div className="text-sm text-teal-100">Call Us</div>
-                <div className="font-semibold">+91 XXXXX XXXXX</div>
+                <div className="font-semibold">+91 9864220960</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -56,7 +56,7 @@ export default function CTA() {
               </div>
               <div className="text-left">
                 <div className="text-sm text-teal-100">Email Us</div>
-                <div className="font-semibold">info@vendgenius.com</div>
+                <div className="font-semibold">olelectronics.in@gmail.com</div>
               </div>
             </div>
           </div>

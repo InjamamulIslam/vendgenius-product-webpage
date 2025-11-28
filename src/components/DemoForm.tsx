@@ -37,25 +37,58 @@ export default function DemoForm({ isOpen, onClose }: DemoFormProps) {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setIsSubmitting(false);
-    setSubmitStatus('success');
-    
-    // Reset form after success
-    setTimeout(() => {
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        company: '',
-        location: '',
-        message: ''
+    try {
+      // Using Web3Forms - FREE form submission service
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: '95eed728-314c-4e74-b93e-cbcef1524b3d', // Get this from web3forms.com
+          subject: 'New VendGenius Demo Request',
+          from_name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          company: formData.company || 'Not provided',
+          location: formData.location,
+          message: formData.message || 'No additional message',
+          to_email: 'olelectronics.in@gmail.com'
+        }),
       });
-      setSubmitStatus('idle');
-      onClose();
-    }, 2000);
+
+      const result = await response.json();
+      
+      if (result.success) {
+        setIsSubmitting(false);
+        setSubmitStatus('success');
+        
+        // Reset form after success
+        setTimeout(() => {
+          setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            company: '',
+            location: '',
+            message: ''
+          });
+          setSubmitStatus('idle');
+          onClose();
+        }, 2000);
+      } else {
+        throw new Error('Form submission failed');
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setIsSubmitting(false);
+      setSubmitStatus('error');
+      
+      // Reset error state after 3 seconds
+      setTimeout(() => {
+        setSubmitStatus('idle');
+      }, 3000);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -174,7 +207,7 @@ export default function DemoForm({ isOpen, onClose }: DemoFormProps) {
               {/* Company */}
               <div>
                 <label htmlFor="company" className="block text-sm font-semibold text-gray-700 mb-1.5">
-                  Company Name *
+                  Company Name <span className="text-gray-400 font-normal">(Optional)</span>
                 </label>
                 <div className="relative">
                   <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -182,7 +215,6 @@ export default function DemoForm({ isOpen, onClose }: DemoFormProps) {
                     type="text"
                     id="company"
                     name="company"
-                    required
                     value={formData.company}
                     onChange={handleChange}
                     className="w-full pl-11 pr-4 py-2.5 border-2 border-gray-200 rounded-lg focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
@@ -232,6 +264,12 @@ export default function DemoForm({ isOpen, onClose }: DemoFormProps) {
 
               {/* Submit Button */}
               <div className="sm:col-span-2">
+                {submitStatus === 'error' && (
+                  <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                    Failed to submit. Please try again or contact us directly.
+                  </div>
+                )}
+                
                 <button
                   type="submit"
                   disabled={isSubmitting}

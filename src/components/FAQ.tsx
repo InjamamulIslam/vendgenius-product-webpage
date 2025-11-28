@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Plus, Minus } from 'lucide-react';
+import ContactCard from './ContactCard';
 
 const faqs = [
   {
@@ -45,7 +46,8 @@ const faqs = [
 ];
 
 export default function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [isContactCardOpen, setIsContactCardOpen] = useState(false);
 
   return (
     <section id="faq" className="py-20 bg-white">
@@ -92,11 +94,17 @@ export default function FAQ() {
 
         <div className="mt-12 text-center">
           <p className="text-gray-600 mb-4">Still have questions?</p>
-          <button className="bg-gradient-to-r from-teal-600 to-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105">
+          <button 
+            onClick={() => setIsContactCardOpen(true)}
+            className="bg-gradient-to-r from-teal-600 to-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105"
+          >
             Contact Our Team
           </button>
         </div>
       </div>
+
+      {/* Contact Card Modal */}
+      <ContactCard isOpen={isContactCardOpen} onClose={() => setIsContactCardOpen(false)} />
     </section>
   );
 }

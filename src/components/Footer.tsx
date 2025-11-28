@@ -1,4 +1,5 @@
 import { Mail, Phone, MapPin, Linkedin, Twitter, Facebook, Instagram } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function Footer() {
   const scrollToSection = (id: string) => {
@@ -75,14 +76,14 @@ export default function Footer() {
             <ul className="space-y-3 text-gray-400">
               <li className="flex items-start gap-2">
                 <Mail className="w-5 h-5 mt-0.5 flex-shrink-0 text-teal-400" />
-                <a href="mailto:info@vendgenius.com" className="hover:text-teal-400 transition-colors">
-                  info@vendgenius.com
+                <a href="mailto:olelectronics.in@gmail.com" className="hover:text-teal-400 transition-colors">
+                  olelectronics.in@gmail.com
                 </a>
               </li>
               <li className="flex items-start gap-2">
                 <Phone className="w-5 h-5 mt-0.5 flex-shrink-0 text-teal-400" />
-                <a href="tel:+91XXXXXXXXXX" className="hover:text-teal-400 transition-colors">
-                  +91 XXXXX XXXXX
+                <a href="tel:+919864220960" className="hover:text-teal-400 transition-colors">
+                  +91 9864220960
                 </a>
               </li>
               <li className="flex items-start gap-2">
@@ -112,9 +113,9 @@ export default function Footer() {
               &copy; {new Date().getFullYear()} VendGenius. All rights reserved.
             </p>
             <div className="flex gap-6 text-sm text-gray-500">
-              <a href="#" className="hover:text-teal-400 transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-teal-400 transition-colors">Terms of Service</a>
-              <a href="#" className="hover:text-teal-400 transition-colors">Cookie Policy</a>
+              <Link to="/privacy-policy" className="hover:text-teal-400 transition-colors">Privacy Policy</Link>
+              <Link to="/terms-of-service" className="hover:text-teal-400 transition-colors">Terms of Service</Link>
+              <Link to="/cookie-policy" className="hover:text-teal-400 transition-colors">Cookie Policy</Link>
             </div>
           </div>
         </div>
