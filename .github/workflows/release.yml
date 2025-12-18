@@ -1,0 +1,100 @@
+name: Create Release on Tag
+
+on:
+  push:
+    tags:
+      - "v*"
+      - "V*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag name to release (e.g., v2025.12.18)"
+        required: true
+        type: string
+      notes:
+        description: "Release notes (optional). If omitted, uses the tag annotation if available."
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release-on-tag:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (include tags)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Read tag annotation
+        id: tag
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          # Extract annotated tag contents if present; fall back to a default message
+          NOTES=$(git for-each-ref "refs/tags/${TAG}" --format='%(contents)')
+          if [ -z "${NOTES}" ]; then
+            NOTES="Release ${TAG}"
+          fi
+          {
+            echo 'notes<<EOF'
+            echo "${NOTES}"
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create or update GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          body: ${{ steps.tag.outputs.notes }}
+          draft: false
+          prerelease: false
+          make_latest: true
+          allow_updates: true
+
+  release-manual:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (include tags)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Ensure tags fetched
+        run: git fetch --tags --force --prune
+
+      - name: Prepare notes (from input or tag annotation)
+        id: prepare
+        shell: bash
+        run: |
+          TAG="${{ inputs.tag }}"
+          NOTES_INPUT="${{ inputs.notes }}"
+          if [ -n "${NOTES_INPUT}" ]; then
+            NOTES="${NOTES_INPUT}"
+          else
+            NOTES=$(git for-each-ref "refs/tags/${TAG}" --format='%(contents)')
+            if [ -z "${NOTES}" ]; then
+              NOTES="Release ${TAG}"
+            fi
+          fi
+          {
+            echo 'notes<<EOF'
+            echo "${NOTES}"
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create or update GitHub Release (manual)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag }}
+          name: ${{ inputs.tag }}
+          body: ${{ steps.prepare.outputs.notes }}
+          draft: false
+          prerelease: false
+          make_latest: true
+          allow_updates: true
